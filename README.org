@@ -1,0 +1,3 @@
+* my-org
+
+For org-mode snippets that don't (yet) warrant their own package.
