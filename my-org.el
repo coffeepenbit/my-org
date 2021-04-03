@@ -415,14 +415,30 @@ CONTENT-LEVEL nil will fold to current level."
 
 
 ;;;;;; Narrow
-(defun my-org-narrow-to-parent nil
+(defun my-org-toggle-narrow-to-subtree (&optional arg)
+  "Narrow to the subtree at point or widen a narrowed buffer.
+
+With ARG \\[universal-argument] narrow to parent subtree."
+  (interactive "P")
+  (save-excursion
+    (if (and (equal arg '(4)))
+        (call-interactively 'my-org-narrow-to-parent-subtree)
+      (call-interactively 'org-toggle-narrow-to-subtree))))
+
+
+(defun my-org-narrow-to-parent-subtree nil
   "Narrow to parent heading."
   (interactive)
   (save-excursion
-    (outline-up-heading 1)
-    (org-narrow-to-subtree)))
-
-
+    (when (called-interactively-p 'any)
+      (message "Narrowing to parent subtree"))
+    ;; Widen before running otherwise highest outline will be the
+    ;; narrowed buffers highest outline
+    (when (buffer-narrowed-p) (widen))
+    (if (>= (org-current-level) 2)
+        (progn (outline-up-heading 1)
+               (org-narrow-to-subtree))
+      (widen))))
 ;;;;; Capture
 (defun my-org-capture-prevent-headline-gobble ()
   "Prevent `org-capture' from gobbling next headline."
