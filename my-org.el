@@ -368,6 +368,7 @@ If TAGS is nil, remove all tags."
   (org-open-at-point))
 
 ;;;;; Outline
+;;;;;; Fold
 (defun my-org-fold-to-content-level (&optional content-level)
   "Fold outline to prefix-argument CONTENT-LEVEL.
 
@@ -411,6 +412,15 @@ CONTENT-LEVEL nil will fold to current level."
   "Sort org entries using my own function(s)."
   (interactive)
   (org-sort-entries nil ?f 'my-org--sort-todo-func))
+
+
+;;;;;; Narrow
+(defun my-org-narrow-to-parent nil
+  "Narrow to parent heading."
+  (interactive)
+  (save-excursion
+    (outline-up-heading 1)
+    (org-narrow-to-subtree)))
 
 
 ;;;;; Capture
