@@ -47,10 +47,19 @@
     (message "Skipping add IDs to non-org mode file")))
 
 
-(defun my-org-auto-format ()
+(defcustom my-org-auto-format-directories nil
+  "Directories where auto-format should be run."
+  :type 'list
+  :group 'my-org)
+
+
+(defun my-org-auto-format nil
   "Tidy up org file."
   (interactive)
-  (if (eq major-mode 'org-mode)
+  (if (and (eq major-mode 'org-mode)
+           (member (file-name-directory (buffer-file-name))
+                   (mapcar 'expand-file-name
+                           my-org-auto-format-directories)))
       (if (my-org-not-archive-p)
           (progn (org-set-tags-command '(4)) ; Realign tags
                  (message "Formatting org file")
