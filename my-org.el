@@ -23,18 +23,6 @@
 
 ;;;; Code:
 
-(with-eval-after-load 'log4e
-  (log4e:deflogger "my-org-logger" "%t [%l] %m" "%H:%M:%S" '((fatal . "fatal")
-                                                             (error . "error")
-                                                             (warn  . "warn")
-                                                             (info  . "info")
-                                                             (debug . "debug")
-                                                             (trace . "trace")))
-  (my-org-logger--log-set-level 'debug 'fatal)
-
-  (my-org-logger--log-enable-logging) ; View log with my-org-logger--log-open-log
-  )
-
 
 (defun my-org-add-ids-to-headlines-in-buffer ()
   "Add ID property to headlines in the current buffer which do not have one."
@@ -268,21 +256,13 @@ DIFF to add or subtract from the number of stars."
 
 \\[universal-argument] - select for a parent heading "
   (interactive "P")
-  (require 'log4e)
   (save-excursion
     (let ((ind-buffer-name "org TODO buffer"))
       (when (equal arg '(4))
         (call-interactively 'helm-org-parent-headings nil (vector 4)))
-
-      (my-org-logger--debug (format "current buffer: %s" (buffer-name)))
-
       (when (get-buffer ind-buffer-name)
         (kill-buffer ind-buffer-name))
       (clone-indirect-buffer-other-window ind-buffer-name t))
-
-    (my-org-logger--debug (format "current buffer: %s" (buffer-name)))
-    (my-org-logger--debug (format "current heading: %s" (org-get-heading)))
-
     (call-interactively 'org-narrow-to-subtree)
     (org-show-todo-tree nil)))
 
