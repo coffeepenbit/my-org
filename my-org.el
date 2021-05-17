@@ -22,8 +22,6 @@
 ;; My org
 
 ;;;; Code:
-
-
 (defun my-org-add-ids-to-headlines-in-buffer ()
   "Add ID property to headlines in the current buffer which do not have one."
   (interactive)
@@ -34,12 +32,10 @@
         (message "Skipping add IDs to archive file"))
     (message "Skipping add IDs to non-org mode file")))
 
-
 (defcustom my-org-auto-format-directories nil
   "Directories where auto-format should be run."
   :type 'list
   :group 'my-org)
-
 
 (defun my-org-auto-format nil
   "Tidy up org file."
@@ -49,31 +45,31 @@
                    (mapcar 'expand-file-name
                            my-org-auto-format-directories)))
       (if (my-org-not-archive-p)
-          (progn (org-set-tags-command '(4)) ; Realign tags
-                 (message "Formatting org file")
-                 ;; Ensure at least 1 blank line before and after entries and
-                 ;; drawers. This last part about drawers is incredibly useful.
-                 (unpackaged/org-fix-blank-lines t)
-                 (org-unindent-buffer))
+          (progn
+            (message "Formatting org file")
+
+            ;; Realign tags
+            (org-set-tags-command '(4))
+
+            ;; Ensure at least 1 blank line before and after entries and
+            ;; drawers. This last part about drawers is incredibly useful.
+            (unpackaged/org-fix-blank-lines t)
+            (org-unindent-buffer))
         (message "Skipping auto-format of archive file"))
     (message "Skipping auto-format of non-org mode file")))
-
 
 (defun my-org-not-archive-p ()
   "Check if buffer name is an `org' archive."
   (and (not (string-match-p ".*\\.org_archive"
                             (buffer-name)))))
 
-
 (defvar org-created-property-name
   "CREATED"
   "The name of the 'org-mode' property storing the creation date of entry.")
 
-
 (defun my-org-set-created-property-all-entries ()
   "Apply my-org-set-create-property to all entries in buffer."
   (org-map-entries 'my-org-set-created-property nil nil))
-
 
 (defun my-org-set-created-property (&optional active NAME)
   "Set a property on the entry giving the creation time.
@@ -90,7 +86,6 @@ If ACTIVE, active timestamp format will be used."
     (unless (org-entry-get (point) created nil)
       (org-set-property created now))))
 
-
 (defun my-org-collect-duplicate-headings ()
   "Check for duplicate org mode headlines."
   ;; Needs to be ran in eval, not interactive (i.e. M-x)."
@@ -106,7 +101,6 @@ If ACTIVE, active timestamp format will be used."
 	    (push hl dups)))
     (nreverse dups)))
 
-
 (defun my-org-diary-last-day-of-month (date)
   "Return t if DATE is the last day of the month."
   (let* ((day (calendar-extract-day date))
@@ -115,7 +109,6 @@ If ACTIVE, active timestamp format will be used."
          (last-day-of-month
           (calendar-last-day-of-month month year)))
     (= day last-day-of-month)))
-
 
 (defun my-org-open-calendar ()
   "Opens cfw calendar buffer at maximum frame size."
@@ -133,13 +126,11 @@ If ACTIVE, active timestamp format will be used."
     ;;   "https://..../basic.ics" "IndianRed") ; google calendar ICS
     )))
 
-
 (defun my-org-create-child-subtree (HEADLINE-NAME)
   "Create child subtree with HEADLINE-NAME, one level lower than current."
   (interactive)
   (my-org-create-subtree HEADLINE-NAME)
   (org-demote))
-
 
 (defun my-org-create-subtree (HEADLINE-NAME)
   "Create subtree with HEADLINE-NAME at current level."
@@ -148,7 +139,6 @@ If ACTIVE, active timestamp format will be used."
   (org-insert-heading)
   (org-edit-headline HEADLINE-NAME))
 
-
 ;; (defun my-org-get-time-stamp-string ()
 ;;   "Get time stamp string from `org-insert-time-stamp'."
 ;;   (interactive)
@@ -156,14 +146,12 @@ If ACTIVE, active timestamp format will be used."
 ;;   (let ((junk
 ;;          (org-insert-time-stamp (current-time) t)))))
 
-
 (defun my-org-set-property-if-unset-all-entries (property &optional value)
   "Set PROPERTY on multiple entries.
 
 Properties Will be set to nil if VALUE is not set."
   (org-map-entries (lambda nil
                      (my-org-set-property-if-unset property value) nil nil)))
-
 
 (defun my-org-set-property-if-unset (property &optional value)
   "Set org headline PROPERTY if not yet set.
@@ -174,7 +162,6 @@ Properties Will be set to nil if VALUE is not set."
         (org-entry-put nil property value)
       (org-entry-put nil property "nil"))))
 
-
 ;; (defun my-org-list-apply ()
 ;;   (interactive)
 ;;   (save-excursion
@@ -182,7 +169,6 @@ Properties Will be set to nil if VALUE is not set."
 ;;                                               (org-element-at-point)))
 ;;            (item-markers (my-org-list-get-item-markers item-struct)))
 ;;       (my-org-list-toggle-headings item-markers))))
-
 
 ;; (defun my-org-list-get-item-markers (struct &optional predicate)
 ;;   (let ((markers ()))
@@ -193,14 +179,12 @@ Properties Will be set to nil if VALUE is not set."
 ;;         (push (nth 0 item) markers)))
 ;;     markers))
 
-
 ;; (defun my-org-list-toggle-headings (item-markers)
 ;;   (dolist (marker item-markers)
 ;;     (goto-char marker)
 ;;     (org-toggle-heading)
 ;;     (org-id-get-create)
 ;;     (org-store-link nil nil)))
-
 
 (defun my-org-headline-level-string (&optional diff)
   "Create headline stars equal to current org level.
@@ -209,20 +193,17 @@ DIFF to add or subtract from the number of stars."
   (let ((diff (or diff 0)))
     (make-string (+ (org-current-level) diff) ?*)))
 
-
 (defun my-org-goto (&optional arg)
   "Use `org-goto' with specified max depth of ARG and outline interface."
   (interactive "P")
   (let ((org-goto-interface 'outline))
     (my-org-goto--function arg)))
 
-
 (defun my-org-goto-outline (&optional arg)
   "Use `org-goto' with specified max depth of ARG and full-path interface."
   (interactive "P")
   (let ((org-goto-interface 'outline-path-completion))
     (my-org-goto--function arg)))
-
 
 (defun my-org-goto--function (&optional arg)
   "Use `org-goto' with specified max depth of ARG."
@@ -232,13 +213,11 @@ DIFF to add or subtract from the number of stars."
         (org-goto))
     (org-goto arg)))
 
-
 (defun my-org-headline-exists (headline)
   "Check if HEADLINE exists in current buffer."
   (interactive)
   (cl-some 'identity
            (org-map-entries (lambda () (my-org-search-headline headline)) nil 'file)))
-
 
 (defun my-org-search-headline (string)
   "Search current headline for STRING."
@@ -248,7 +227,6 @@ DIFF to add or subtract from the number of stars."
                                           'no-todo
                                           'no-priority
                                           'no-comment)))))
-
 
 ;; (with-eval-after-load 'helm-org
 (defun my-org-todo-buffer (&optional arg)
@@ -266,7 +244,6 @@ DIFF to add or subtract from the number of stars."
     (call-interactively 'org-narrow-to-subtree)
     (org-show-todo-tree nil)))
 
-
 ;;;;; Tags
 (defun my-org-rename-tag (old new)
   "Replace all instances of OLD tags with NEW tags in agenda files."
@@ -276,13 +253,11 @@ DIFF to add or subtract from the number of stars."
    (format "+%s" old)
    'agenda))
 
-
 (defun my-org-change-tag (old new)
   "Replace OLD tag with NEW tag for headline, if found."
   (when (member old (org-get-tags))
     (org-toggle-tag new 'on)
     (org-toggle-tag old 'off)))
-
 
 (defun my-org-remove-tags (&optional tags)
   "Remove TAGS from entry.
@@ -292,13 +267,11 @@ If TAGS is nil, remove all tags."
     (when (member tag (org-get-tags))
       (org-toggle-tag tag 'off))))
 
-
 ;;;;; Deadlines and schedule
 (defun my-org-swap-deadline-and-schedule (swap-from)
   "SWAP-FROM deadline/schedule to schedule/deadline."
   (cond ((eq swap-from 'from-deadline) (my-org-deadline-to-schedule))
         ((eq swap-from 'from-schedule) (my-org-schedule-to-deadline))))
-
 
 (defun my-org-schedule-to-deadline nil
   "Convert schedule timestamp to deadline timestamp."
@@ -317,7 +290,6 @@ If TAGS is nil, remove all tags."
           (when deadline-time
             (display-warning :error "Headline already has a deadline time"))
           )))))
-
 
 (defun my-org-deadline-to-schedule nil
   "Convert deadline timestamp to schedule timestamp."
@@ -338,16 +310,13 @@ If TAGS is nil, remove all tags."
         ;;   )
         ))))
 
-
 (defun my-org-remove-deadline nil
   "Remove org entry headline."
   (org-deadline '(4)))
 
-
 (defun my-org-remove-schedule nil
   "Remove org entry schedule."
   (org-schedule '(4)))
-
 
 ;;;;; Links
 (defun my-org-open-next-link nil
@@ -396,12 +365,10 @@ CONTENT-LEVEL nil will fold to current level."
                1)) ; Make non-todo items highest PRIORITY
         ))))
 
-
 (defun my-org-sort-entries (&rest arg)
   "Sort org entries using my own function(s)."
   (interactive)
   (org-sort-entries nil ?f 'my-org--sort-todo-func))
-
 
 ;;;;;; Narrow
 (defun my-org-toggle-narrow-to-subtree (&optional arg)
@@ -413,7 +380,6 @@ With ARG \\[universal-argument] narrow to parent subtree."
     (if (and (equal arg '(4)))
         (call-interactively 'my-org-narrow-to-parent-subtree)
       (call-interactively 'org-toggle-narrow-to-subtree))))
-
 
 (defun my-org-narrow-to-parent-subtree nil
   "Narrow to parent heading."
@@ -446,9 +412,8 @@ With ARG \\[universal-argument] narrow to parent subtree."
 ;;   (interactive)
 ;;   (org-capture 0))
 
-
 (defun my-org-capture-add-entry-id ()
-  "This is a fix for org-roam capture"
+  "This is a fix for org-roam capture."
   (unless (org-before-first-heading-p)
     (org-id-get-create)))
 
@@ -494,7 +459,6 @@ With ARG \\[universal-argument] narrow to parent subtree."
 ;;     (org-refile arg default-buffer rfloc msg)
 ;;     )
 ;;   )
-
 
 ;; (defun my-org-refile-here (&optional arg &rest other-args)
 ;;   "Refile with context."
@@ -546,12 +510,10 @@ With ARG \\[universal-argument] narrow to parent subtree."
               (my-package-insert-lines-below nblank-lines-below-diff)))))
       )))
 
-
 ;;;;;;; Number of blank lines surrounding heading
 (defun my-org-get-blank-lines-surrounding-entry nil
   "Get number of blank lines surrounding entry."
   `(,(my-org-get-blank-lines-above-entry) ,(my-org-get-blank-lines-below-entry)))
-
 
 (defun my-org-get-blank-lines-above-entry nil
   "Get number of blank lines above entry."
@@ -559,7 +521,6 @@ With ARG \\[universal-argument] narrow to parent subtree."
     (save-excursion
       (org-back-to-heading)
       (my-package-get-blank-lines-above))))
-
 
 (defun my-org-get-blank-lines-below-entry nil
   "Get number of blank lines below entry."
@@ -581,8 +542,6 @@ With ARG \\[universal-argument] narrow to parent subtree."
             nblank-lines)
         0))))
 
-
-
 ;;;;; Agenda
 (defun my-org-agenda--function (func &rest args)
   "Run FUNC from within `org-agenda'.
@@ -601,12 +560,10 @@ ARGS are passed to FUNC."
       (apply func args))
     ))
 
-
 ;;;;;; Swap schedule and agenda
 (defun my-org-agenda-schedule-to-deadline nil
   (interactive)
   (my-org-agenda--function 'my-org-swap-deadline-and-schedule 'from-schedule))
-
 
 (defun my-org-agenda-deadline-to-schedule nil
   (interactive)
@@ -651,7 +608,6 @@ ARGS are passed to FUNC."
                            ;; Provide position for point to jump to
                            (org-element-property :end (org-element-at-point))
                            ))))))
-
 
 ;;;; Provide
 (provide 'my-org)
