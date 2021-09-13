@@ -557,8 +557,9 @@ ARGS are passed to FUNC."
     (with-current-buffer headline-buffer
       (widen)
       (goto-char headline-pos)
-      (apply func args))
-    ))
+      (apply func args))))
+
+;;;;;; 
 
 ;;;;;; Swap schedule and agenda
 (defun my-org-agenda-schedule-to-deadline nil
