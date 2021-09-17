@@ -577,6 +577,17 @@ ARGS are passed to FUNC."
 ;;         (org-element-property :end (org-element-at-point))
 ;;       nil)))
 
+
+;;;;;; Agenda context
+(defun my-org-agenda-contextual (files)
+  "Dispatch `org-agenda' with specified FILES."
+  (require 'org)
+  (require 'init-org-agenda)
+  (unwind-protect
+      (progn (org-store-new-agenda-file-list files)
+             (call-interactively #'org-agenda))
+    (org-store-new-agenda-file-list my-org-agenda-files)))
+
 ;;;;; Archive
 (defun my-org-batch-archive nil
   "Archives multiple subtrees if they're done."
