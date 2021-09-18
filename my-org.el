@@ -583,10 +583,9 @@ ARGS are passed to FUNC."
   "Dispatch `org-agenda' with specified FILES."
   (require 'org)
   (require 'init-org-agenda)
-  (unwind-protect
-      (progn (org-store-new-agenda-file-list files)
-             (call-interactively #'org-agenda))
-    (org-store-new-agenda-file-list my-org-agenda-files)))
+  (org-store-new-agenda-file-list files)
+  (progn (org-store-new-agenda-file-list files)
+         (call-interactively #'org-agenda)))
 
 ;;;;; Archive
 (defun my-org-batch-archive nil
