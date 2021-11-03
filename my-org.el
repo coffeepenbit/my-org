@@ -63,7 +63,7 @@
   (and (not (string-match-p ".*\\.org_archive"
                             (buffer-name)))))
 
-(defvar org-created-property-name
+(defvar my-org-created-property-name
   "CREATED"
   "The name of the 'org-mode' property storing the creation date of entry.")
 
@@ -78,13 +78,19 @@ By default the property is called CREATED.  If given the 'NAME'
 argument will be used instead.  If the property already exists, it
 will NOT be modified.
 
+Does not run for journal entries.
+
 If ACTIVE, active timestamp format will be used."
   (interactive)
-  (let* ((created (or NAME org-created-property-name))
+  (let* ((created (or NAME my-org-created-property-name))
          (fmt (if active "<%s>" "[%s]"))
-         (now  (format fmt (format-time-string "%Y-%m-%d %a %H:%M"))))
-    (unless (org-entry-get (point) created nil)
-      (org-set-property created now))))
+         (now  (format fmt (format-time-string  "%Y-%m-%d %a %H:%M"))))
+    (cond ((string-match-p (regexp-quote "journal") (buffer-name))
+           (message "Capturing journal entry -- Not setting CREATED"))
+          ((null (org-entry-get (point) created nil))
+           nil)
+          (t
+           (org-set-property created now)))))
 
 (defun my-org-collect-duplicate-headings ()
   "Check for duplicate org mode headlines."
