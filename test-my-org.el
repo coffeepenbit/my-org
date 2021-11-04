@@ -31,6 +31,31 @@
 
 (my-ert-reload-feature 'my-org)
 
+;;;; my-org-agenda-verify-tags
+;; (ert-deftest test-my-org-agenda-verify-tags nil
+;;   (let ((predefined-tags (list))
+;;         (all-tags (list)))
+;;     (should (equal (list)
+;;                    (my-org-verify-tags predefined-tags all-tags))))
+;;   (let ((predefined-tags (list "predefined_tag1"))
+;;         (all-tags (list)))
+;;     (should (equal (list)
+;;                    (my-org-verify-tags predefined-tags all-tags))))
+;;   (let ((predefined-tags (list "predefined_tag1"))
+;;         (all-tags (list "predefined_tag1")))
+;;     (should (equal (list)
+;;                    (my-org-verify-tags predefined-tags all-tags))))
+;;   (let ((predefined-tags (list "predefined_tag1"))
+;;         (all-tags (list "predefined_tag1" "unexpected_tag1")))
+;;     (should (equal (list "unexpected_tag1")
+;;                    (my-org-verify-tags predefined-tags all-tags)))))
+
+(ert-deftest test-my-org-not-in-list nil
+  (should (equal nil (my-org-not-in-list nil nil)))
+  (should (equal '(foo) (my-org-not-in-list '(foo) nil)))
+  (should (equal nil (my-org-not-in-list '(foo) '(foo))))
+  (should (equal nil (my-org-not-in-list '(foo) '(foo bar)))))
+
 ;;;; my-org-agenda--swap-deadline-and-schedule
 ;; (ert-deftest test-my-org-agenda--swap-deadline-and-schedule nil
 ;;   ;; Schedule to deadline

@@ -22,6 +22,43 @@
 ;; My org
 
 ;;;; Code:
+;; (require 'dash)
+
+(defun my-org-verify-tags (&optional predefined-tags all-tags)
+  (let ((predefined-tags (or predefined-tags
+                             (my-org-predefined-tags)))
+        (all-tags (or all-tags 
+                      (my-org-all-tags)))
+        (diff (my-org-not-in-list all-tags predefined-tags)))
+    (when (not (null diff))
+      (display-warning 'my-org (format "Unexpected tags: %s" diff)))
+    diff))
+
+(defun my-org-not-in-list (list1 list2)
+  "Find elements in LIST1 that are not in LIST2."
+  (let ((elements-not-in-list (mapcar (lambda (element)
+                                        (unless (member element list2)
+                                          element))
+                                      list1)))
+    (message (format "enil: %s" elements-not-in-list))
+    (if ;; (null elements-not-in-list)
+        (null (car elements-not-in-list))
+        nil
+      elements-not-in-list)))
+
+        (defun my-org-predefined-tags nil
+          nil)
+
+(defun my-org-all-tags nil
+  nil)
+
+(defcustom my-org-spurious-tags '(:startgroup :endgroup)
+  "Elements that should not be considered as tags.")
+
+(defun spurious-tag-p (tag)
+  "Return non-nil if TAG is spurious."
+  (member tag my-org-spurious-tags))
+
 (defun my-org-add-ids-to-headlines-in-buffer ()
   "Add ID property to headlines in the current buffer which do not have one."
   (interactive)
