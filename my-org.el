@@ -25,9 +25,10 @@
 ;; (require 'dash)
 
 (defun my-org-verify-tags (&optional predefined-tags all-tags)
+  "Verify no additional tags present in PREDEFINED-TAGS that are not in ALL-TAGS."
   (let ((predefined-tags (or predefined-tags
                              (my-org-predefined-tags)))
-        (all-tags (or all-tags 
+        (all-tags (or all-tags
                       (my-org-all-tags)))
         (diff (my-org-not-in-list all-tags predefined-tags)))
     (when (not (null diff))
@@ -36,18 +37,17 @@
 
 (defun my-org-not-in-list (list1 list2)
   "Find elements in LIST1 that are not in LIST2."
-  (let ((elements-not-in-list (mapcar (lambda (element)
-                                        (unless (member element list2)
-                                          element))
-                                      list1)))
-    (message (format "enil: %s" elements-not-in-list))
-    (if ;; (null elements-not-in-list)
-        (null (car elements-not-in-list))
-        nil
-      elements-not-in-list)))
+  (remq nil
+        (mapcar (lambda (element)
+                  (message "element: %s\nlist2: %s"
+                           element list2)
+                  (when (null (member element list2))
+                    (message "%s is not in %s" element list2)
+                    element))
+                list1)))
 
-        (defun my-org-predefined-tags nil
-          nil)
+(defun my-org-predefined-tags nil
+  nil)
 
 (defun my-org-all-tags nil
   nil)
