@@ -56,6 +56,13 @@
   (should (equal nil (my-org-not-in-list '(foo) '(foo))))
   (should (equal nil (my-org-not-in-list '(foo) '(foo bar)))))
 
+(ert-deftest test-my-org-predefined-tags nil
+  (should (equal '("tag") (my-org-predefined-tags '(("tag")))))
+  (should (equal '("tag") (my-org-predefined-tags '((:startgroup)
+                                                    ("tag" . 1)
+                                                    (:endgroup))))))
+  
+
 ;;;; my-org-agenda--swap-deadline-and-schedule
 ;; (ert-deftest test-my-org-agenda--swap-deadline-and-schedule nil
 ;;   ;; Schedule to deadline

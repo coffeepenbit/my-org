@@ -32,7 +32,8 @@
                       (my-org-all-tags)))
         (diff (my-org-not-in-list all-tags predefined-tags)))
     (when (not (null diff))
-      (display-warning 'my-org (format "Unexpected tags: %s" diff)))
+      (display-warning 'my-org (format "Unexpected tags: %s\nConsider removing
+or adding to predefined list." diff)))
     diff))
 
 (defun my-org-not-in-list (list1 list2)
@@ -46,11 +47,13 @@
                     element))
                 list1)))
 
-(defun my-org-predefined-tags nil
-  nil)
+(defun my-org-predefined-tags (&optional tags)
+  (remove-if 'spurious-tag-p
+             (mapcar 'car (or tags org-tag-alist))))
 
-(defun my-org-all-tags nil
-  nil)
+(defun my-org-all-tags (&optional tags)
+  (or tags
+      org-global-tags-completion-table))
 
 (defcustom my-org-spurious-tags '(:startgroup :endgroup)
   "Elements that should not be considered as tags.")
