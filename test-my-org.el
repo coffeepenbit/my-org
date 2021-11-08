@@ -32,19 +32,25 @@
 (my-ert-reload-feature 'my-org)
 
 ;;;; my-org-agenda-verify-tags
-(ert-deftest test-my-org-agenda-verify-tags nil
+(ert-deftest test-my-org-agenda-verify-tags/both-empty nil
   (let ((predefined-tags (list))
         (all-tags (list)))
     (should (equal (list)
-                   (my-org-verify-tags predefined-tags all-tags))))
+                   (my-org-verify-tags predefined-tags all-tags)))))
+
+(ert-deftest test-my-org-agenda-verify-tags/one-predefined nil
   (let ((predefined-tags (list "predefined_tag1"))
         (all-tags (list)))
     (should (equal (list)
-                   (my-org-verify-tags predefined-tags all-tags))))
+                   (my-org-verify-tags predefined-tags all-tags)))))
+
+(ert-deftest test-my-org-agenda-verify-tags/one-of-each-matching nil
   (let ((predefined-tags (list "predefined_tag1"))
         (all-tags (list "predefined_tag1")))
     (should (equal (list)
-                   (my-org-verify-tags predefined-tags all-tags))))
+                   (my-org-verify-tags predefined-tags all-tags)))))
+
+(ert-deftest test-my-org-agenda-verify-tags/one-unexpected-tag nil
   (let ((predefined-tags (list "predefined_tag1"))
         (all-tags (list "predefined_tag1" "unexpected_tag1")))
     (should (equal (list "unexpected_tag1")
