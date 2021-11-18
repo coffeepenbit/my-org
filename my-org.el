@@ -88,15 +88,18 @@ or adding to predefined list." diff)))
           (progn
             (message "Formatting org file")
 
-            ;; Realign tags
-            (org-set-tags-command '(4))
-
+            (my-org-align-tags)
+            
             ;; Ensure at least 1 blank line before and after entries and
             ;; drawers. This last part about drawers is incredibly useful.
             (unpackaged/org-fix-blank-lines t)
             (org-unindent-buffer))
         (message "Skipping auto-format of archive file"))
     (message "Skipping auto-format of non-org mode file")))
+
+(defun my-org-align-tags nil
+  "Align tags in current file."
+  (org-set-tags-command '(4)))
 
 (defun my-org-not-archive-p ()
   "Check if buffer name is an `org' archive."
