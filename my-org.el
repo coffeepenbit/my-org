@@ -99,6 +99,7 @@ or adding to predefined list." diff)))
 
 (defun my-org-align-tags nil
   "Align tags in current file."
+  (interactive)
   (org-set-tags-command '(4)))
 
 (defun my-org-not-archive-p ()
