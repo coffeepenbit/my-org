@@ -25,16 +25,25 @@
 ;; (require 'dash)
 
 (defun my-org-verify-tags (&optional predefined-tags all-tags)
-  "Verify no additional tags present in PREDEFINED-TAGS that are not in ALL-TAGS."
+  "Verify no additional tags present in PREDEFINED-TAGS that aren't in ALL-TAGS."
+  (interactive)
   (let ((predefined-tags (or predefined-tags
                              (my-org-predefined-tags)))
         (all-tags (or all-tags
                       (my-org-all-tags)))
-        (diff (my-org-not-in-list all-tags predefined-tags)))
-    (when (not (null diff))
-      (display-warning 'my-org (format "Unexpected tags: %s\nConsider removing
+        (diff (my-org-not-in-list all-tags predefined-tags))
+        (npredefined-tags (length predefined-tags))
+        (nall-tags (length all-tags)))
+    (message "npredefined-tags: %s" npredefined-tags)
+    (message "nall-tags: %s" nall-tags)
+    (if (eq npredefined-tags nall-tags)
+        (message "No unexpected tags")
+      (progn
+        (display-warning 'my-org (format "n_predefined_tags: %s" npredefined-tags))
+        (display-warning 'my-org (format "n_all_tags: %s" nall-tags))
+        (display-warning 'my-org (format "Unexpected tags: %s\nConsider removing
 or adding to predefined list." diff)))
-    diff))
+      diff)))
 
 (defun my-org-not-in-list (list1 list2)
   "Find elements in LIST1 that are not in LIST2."
@@ -53,7 +62,9 @@ or adding to predefined list." diff)))
 
 (defun my-org-all-tags (&optional tags)
   (or tags
-      org-global-tags-completion-table))
+      (mapcar (lambda (element)
+                (car element))
+              (org-global-tags-completion-table))))
 
 (defcustom my-org-spurious-tags '(:startgroup :endgroup)
   "Elements that should not be considered as tags.")
@@ -89,7 +100,7 @@ or adding to predefined list." diff)))
             (message "Formatting org file")
 
             (my-org-align-tags)
-            
+
             ;; Ensure at least 1 blank line before and after entries and
             ;; drawers. This last part about drawers is incredibly useful.
             (unpackaged/org-fix-blank-lines t)

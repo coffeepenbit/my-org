@@ -59,6 +59,7 @@
 (ert-deftest test-my-org-not-in-list nil
   (should (equal nil (my-org-not-in-list nil nil)))
   (should (equal '(foo) (my-org-not-in-list '(foo) nil)))
+  (should (equal nil (my-org-not-in-list nil '(foo))))
   (should (equal nil (my-org-not-in-list '(foo) '(foo))))
   (should (equal nil (my-org-not-in-list '(foo) '(foo bar)))))
 
